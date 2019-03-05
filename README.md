@@ -2,7 +2,7 @@
 
 <span style="font-family: calibri, Garamond, 'Comic Sans MS' ;">This project was created to collect Amazon EKS log files and OS logs for troubleshooting Amazon EKS customer support cases.</span>
 
-#### Usage
+#### *Usage*
 Run this project as the root user:
 ```
 curl -O https://raw.githubusercontent.com/nithu0115/eks-logs-collector/master/eks-log-collector.sh
@@ -11,10 +11,10 @@ sudo bash eks-log-collector.sh
 
 Confirm if the tarball file was successfully created (it can be .tgz or .tar.gz)
 
-#### Retrieving the logs
+#### *Retrieving the logs*
 Download the tarball using your favourite Secure Copy tool.
 
-#### Example output
+#### *Example output*
 The project can be used in normal or enable_debug(**Caution: enable_debug will prompt to confirm if we can restart Docker daemon which would kill running containers**).
 
 ```
@@ -32,7 +32,7 @@ MODES:
                     EKS related config files and logs. This is the default mode.
      enable_debug   Enables debug mode for the Docker daemon
 ```
-#### Example output in normal mode
+#### *Example output in normal mode*
 The following output shows this project running in normal mode.
 
 ```
@@ -59,5 +59,36 @@ Trying to archive gathered information...
 
 	Done... your bundled logs are located in /opt/log-collector/eks_i-0717c9d54b6cfaa19_2019-02-02_0103-UTC_0.0.4.tar.gz
 ```
+
+
+### Collecting EKS Worker Node(s) logs using SSM
+
+#### *Prerequisites*:
+
+1. Configure AWS CLI on the system where you will run the below commands. The IAM entity (User/Role) should have SSM permissions.
+
+2. SSM agent should be installed and running on Worker Node(s).
+
+3. Worker Node(s) should have required permissions to communicate with SSM service. IAM managed role `AmazonEC2RoleforSSM` will have all the required permission for SSM agent to run on EC2 instances. The IAM managed role `AmazonEC2RoleforSSM` has `S3:PutObject` permission to all S3 resources. 
+
+*Note:* For more granular control on the IAM permission check [AWS Systems Manager Permissions Reference ](https://docs.aws.amazon.com/systems-manager/latest/userguide/auth-and-access-control-permissions-reference.html) link
+
+4. A S3 bucket location is required which is taken as an input parameter to `aws ssm send-command` command, to which the logs should be pushed.
+
+
+#### *To run `aws ssm send-command` to collect logs from Worker Node(s):*
+
+1. Create a file which contains the content of the SSM document by running the following command 
+
+
+2. Create the SSM document named "EKSLogCollector" using the following command:
+
+```aws ssm create-document —name "EKSLogCollector" —document-type "Command" —content file://EKS_SSM_Content.txt >/dev/null 2>&1```
+
+3. To execute the bash script in the SSM document and to collect the logs from worker, run the following command: 
+
+```aws ssm send-command —instance-ids <worker node instance ID> —document-name "EKSLogCollector" —parameters "bucketName=<S3 bucket name to push the logs>" —output text```
+
+4. Once the above command is executed successfully, the logs should be present in the S3 bucket specified in step 3. 
 
 
