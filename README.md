@@ -78,17 +78,14 @@ Trying to archive gathered information...
 
 #### *To run `aws ssm send-command` to collect logs from Worker Node(s):*
 
-1. Create a file which contains the content of the SSM document by running the following command 
+1. Create the SSM document named "EKSLogCollector" using the following command:
 
+```aws ssm create-document --name "EKSLogCollector2" --document-type "Command" --content https://github.com/mahrev/eks-logs-collector/blob/master/eks-ssm-content.json```
 
-2. Create the SSM document named "EKSLogCollector" using the following command:
+2. To execute the bash script in the SSM document and to collect the logs from worker, run the following command: 
 
-```aws ssm create-document —name "EKSLogCollector" —document-type "Command" —content file://EKS_SSM_Content.txt >/dev/null 2>&1```
+```aws ssm send-command --instance-ids <worker node instance ID> --document-name "EKSLogCollector" --parameters "bucketName=<S3 bucket name to push the logs>" --output text```
 
-3. To execute the bash script in the SSM document and to collect the logs from worker, run the following command: 
-
-```aws ssm send-command —instance-ids <worker node instance ID> —document-name "EKSLogCollector" —parameters "bucketName=<S3 bucket name to push the logs>" —output text```
-
-4. Once the above command is executed successfully, the logs should be present in the S3 bucket specified in the previous step. 
+3. Once the above command is executed successfully, the logs should be present in the S3 bucket specified in the previous step. 
 
 
