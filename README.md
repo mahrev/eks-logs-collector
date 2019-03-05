@@ -89,6 +89,6 @@ Trying to archive gathered information...
 
 ```aws ssm send-command —instance-ids <worker node instance ID> —document-name "EKSLogCollector" —parameters "bucketName=<S3 bucket name to push the logs>" —output text```
 
-4. Once the above command is executed successfully, the logs should be present in the S3 bucket specified in step 3. 
+4. Once the above command is executed successfully, the logs should be present in the S3 bucket specified in the previous step. 
 
 
