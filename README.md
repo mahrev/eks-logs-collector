@@ -80,7 +80,7 @@ Trying to archive gathered information...
 
 1. Create the SSM document named "EKSLogCollector" using the following command:
 
-```aws ssm create-document --name "EKSLogCollector2" --document-type "Command" --content https://github.com/mahrev/eks-logs-collector/blob/master/eks-ssm-content.json```
+```aws ssm create-document --name "EKSLogCollector" --document-type "Command" --content https://github.com/mahrev/eks-logs-collector/blob/master/eks-ssm-content.json```
 
 2. To execute the bash script in the SSM document and to collect the logs from worker, run the following command: 
 
