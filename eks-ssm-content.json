@@ -1,6 +1,6 @@
 {
    "schemaVersion":"2.2",
-   "description":"ECS Log collector",
+   "description":"EKS Log Collector",
     "parameters":{
        "bucketName":{
            "type": "String",
